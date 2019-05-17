@@ -30,6 +30,7 @@ servers = [
 
 # This script to install k8s using kubeadm will get executed after a box is provisioned
 $configureBox = <<-SCRIPT
+    echo "Replacing source list"
     sudo sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
     sudo sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
 
@@ -100,11 +101,11 @@ Vagrant.configure("2") do |config|
 
     servers.each do |opts|
         config.vm.define opts[:name] do |config|
-
             config.vm.box = opts[:box]
             config.vm.box_version = opts[:box_version]
             config.vm.hostname = opts[:name]
             config.vm.network :private_network, ip: opts[:eth1]
+            config.vbguest.auto_update = false  
 
             config.vm.provider "virtualbox" do |v|
 
