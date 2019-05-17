@@ -38,6 +38,11 @@ $configureBox = <<-SCRIPT
 
     curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
     usermod -aG docker vagrant
+
+    echo "Pull images"
+    chmod +x /opt/config/load_images.sh
+    cd /opt/config/
+    ./load_images.sh images
     
     # install kubeadm
     apt-get update && apt-get install -y apt-transport-https
@@ -115,6 +120,8 @@ Vagrant.configure("2") do |config|
                 v.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
 
             end
+
+            config.vm.synced_folder "config/", "/opt/config"
 
             # we cannot use this because we can't install the docker version we want - https://github.com/hashicorp/vagrant/issues/4871
             #config.vm.provision "docker"
